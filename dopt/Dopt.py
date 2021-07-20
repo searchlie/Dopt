@@ -42,24 +42,12 @@ def appeared_level_pairs(df, levels):
             number_of_level_pairs += df.drop_duplicates(subset=[i, j]).shape[0]
     return number_of_level_pairs
 
+# 関数定義：オフセット（定数項）の追加
+def add_offset(df):
+    num_of_row = df.shape[0]
+    matrix = np.matrix(df)
+    return np.concatenate([np.ones([num_of_row, 1])/np.sqrt(num_of_row), matrix], axis=1)
 #### もしカテゴリカル変数　つまり非順序変数が入っている場合　One-Hotエンコーディングして制約条件を満たさない候補を外す　？
-
-# 関数定義：D最適計画
-def D_optimal_by_quality(levels, num_of_exp, quality):
-    CandidateSet = pd.DataFrame(candidate_set(levels), columns = ["因子 " + str(i+1) for i in range(len(levels))])
-    CandidateSet = CandidateSet + np.int64(np.ones(CandidateSet.shape)) # 全要素に1を足して直交計画表と合わせる
-    best_score = 0
-    cnt = 0
-    while best_score<quality:
-        cnt = cnt + 1
-        rand_indices = sorted(np.random.choice(CandidateSet.shape[0], size = num_of_exp, replace = False))
-        rand_df = CandidateSet.iloc[rand_indices]
-        current_score = gramian(autoscale(rand_df))
-        if current_score > best_score:
-            best_score = current_score
-            best_df = rand_df.copy()
-    best_df.index = ["実験 " + str(i+1) for i in range(num_of_exp)]
-    return best_df, best_score, cnt
 
 def D_optimal_by_times(levels, num_of_exp, num_of_rand):
     CandidateSet = pd.DataFrame(candidate_set(levels))
@@ -68,7 +56,7 @@ def D_optimal_by_times(levels, num_of_exp, num_of_rand):
     for i in range(num_of_rand):
         rand_indices = sorted(np.random.choice(CandidateSet.shape[0], size = num_of_exp, replace = False))
         rand_df = CandidateSet.iloc[rand_indices]
-        current_score = gramian(autoscale(rand_df))
+        current_score = gramian(add_offset(autoscale(rand_df)))
         if current_score > best_score:
             best_score = current_score
             best_df = rand_df.copy()
