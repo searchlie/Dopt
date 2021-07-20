@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'calculator',
+    'dopt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +51,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', #追加
 ]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache' #追加
 
 ROOT_URLCONF = 'django_projects.urls'
 
