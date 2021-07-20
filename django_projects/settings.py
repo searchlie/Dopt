@@ -53,7 +53,8 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware', #追加
 ]
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache' #追加
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache' #追加
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db' #追加
 
 ROOT_URLCONF = 'django_projects.urls'
 

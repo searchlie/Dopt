@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import numpy as np
+import pandas as pd
 
 from .forms import UserForm
 import re
@@ -17,7 +18,8 @@ def Dopt_view(request):
 
         best_df, best_score, coverage = D_optimal_by_times(levels, num_of_exp, num_of_rand)
 
-        request.session['best_df'] = best_df
+        #request.session['best_df'] = best_df
+        request.session['best_df'] = best_df.to_json()
 
         params['result0'] = '実験条件: '+ str(len(levels)) + '因子 (' + ', '.join([str(level) + '水準' for level in levels]) + ')'
         params['result1'] = '実施割合: '+ '{:.1f}'.format(100*num_of_exp/np.prod(levels)) + '% (一部実施' + str(num_of_exp) + '回 : 完全実施' + str(np.prod(levels)) + '回)'
@@ -31,7 +33,7 @@ def Dopt_view(request):
     return render(request, 'index.html', params)
 
 def file_download_view(request):
-    best_df = request.session['best_df']
+    best_df = pd.read_json(request.session['best_df'])
 
     response = HttpResponse(content_type='text/csv; charset=shift-jis') #utf8')
     response['Content-Disposition'] = 'attachment; filename=result.csv'
