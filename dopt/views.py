@@ -34,9 +34,8 @@ def Dopt_view(request):
 
 def file_download_view(request):
     best_df = pd.read_json(request.session['best_df'])
-
     response = HttpResponse(content_type='text/csv; charset=shift-jis') #utf8')
-    response['Content-Disposition'] = 'attachment; filename=result.csv'
+    response['Content-Disposition'] = 'attachment; filename=dopt_' + str(best_df.shape[1]) + '-factors_' + str(best_df.shape[0]) + '-experiments' + '.csv'
     best_df.to_csv(path_or_buf=response, encoding='shift-jis') #utf-8-sig')
 
     return response
