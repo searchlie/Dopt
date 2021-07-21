@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
 
+# 関数定義：二項係数
+def binom_np(n, k):
+    return 1 if k== 0 or k== n else np.prod([(n + 1 -i) /i for i in range(1, k + 1)])
+
 # 関数定義：グラム行列X'Xの行列式を求める
 def gramian(matrix):
     return np.linalg.det(np.dot(matrix.T, matrix))

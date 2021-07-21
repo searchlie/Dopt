@@ -34,11 +34,12 @@
         {{ form.as_p }}
         <button type="submit">計算</button>
     </form>
-    <p>{{ result0 }}</p>
-    <p>{{ result1 }}</p>
+    <p>{{ exp_condition }}</p>
+    <p>{{ exp_ratio }}</p>
+    <p>{{ combi_ratio }}</p>
     <p>{{ matrix|safe }}</p> 
-    <p>{{ result2 }}</p> 
-    <p>{{ result3 }}</p> 
-    <p><a href="csv_download">{{ result4 }}</a></p> 
+    <p>{{ doptimality }}</p> 
+    <p>{{ coverage }}</p> 
+    <p><a href="csv_download">{{ download }}</a></p> 
 
 {% endblock %}

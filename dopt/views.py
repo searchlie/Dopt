@@ -5,10 +5,10 @@ import pandas as pd
 
 from .forms import UserForm
 import re
-from .Dopt import D_optimal_by_times
+from .Dopt import D_optimal_by_times, binom_np
 
 def Dopt_view(request):
-    params = {'result1': '', 'result2': '', 'result3': '', 'form': None, 'matrix': ''}
+    params = {'form': None}
     if request.method == 'POST':
         form = UserForm(request.POST)
 
@@ -21,11 +21,14 @@ def Dopt_view(request):
         #request.session['best_df'] = best_df
         request.session['best_df'] = best_df.to_json()
 
-        params['result0'] = '実験条件: '+ str(len(levels)) + '因子 (' + ', '.join([str(level) + '水準' for level in levels]) + ')'
-        params['result1'] = '実施割合: '+ '{:.1f}'.format(100*num_of_exp/np.prod(levels)) + '% (一部実施' + str(num_of_exp) + '回 : 完全実施' + str(np.prod(levels)) + '回)'
-        params['result2'] = 'D最適性: '+ '{:.1f}'.format(best_score*100) + '%'
-        params['result3'] = '網羅率: '+ '{:.1f}'.format(coverage*100) + '%'
-        params['result4'] = 'CSVダウンロード'
+        params['exp_condition'] = '実験条件: '+ str(len(levels)) + '因子 (' + ', '.join([str(level) + '水準' for level in levels]) + ')'
+        params['doptimality'] = 'D最適性: '+ '{:.1f}'.format(best_score*100) + '%'
+        num_of_candidates = np.prod(levels)
+        params['exp_ratio'] = '実施率: '+ '{:.1f}'.format(100*num_of_exp/num_of_candidates) + '% (一部実施要因計画' + str(num_of_exp) + '回 / 完全実施要因計画' + str(num_of_candidates) + '回)'
+        all_combi = int(binom_np(num_of_candidates, num_of_exp))
+        params['combi_ratio'] = '探索率: '+ '{:.1f}'.format(100*num_of_rand/all_combi) + '% (探索組み合わせ' + str(num_of_rand) + '通り / 全組み合わせ' + str(all_combi) + '通り)'
+        params['coverage'] = '網羅率: '+ '{:.1f}'.format(coverage*100) + '%'
+        params['download'] = 'CSVダウンロード'
         params['form'] = form
         params['matrix'] = best_df.to_html()
     else:
